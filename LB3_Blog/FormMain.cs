@@ -5,50 +5,64 @@ using System.ComponentModel;
 namespace LB3_Blog
 {
     public partial class FormMain : Form
-    {//создаётся экземпляр контекста данных, который будет использоваться для загрузки и отлеживания изменний о пользователях
-        private BlogContext? db;
+    {
+        // Экземпляр контекста данных, который будет использоваться
+        // для загрузки и отслеживания изменений о пользователях
+        private Models.BlogContext? _db;
+
         public FormMain()
         {
             InitializeComponent();
         }
-        //Метод OnLoad вызывает при загрузке формы
+
+        // OnLoad - при загрузки формы
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            this.db = new BlogContext();
-            //Метод Load расширения используется для загрузки всех пользователей из базы данных
-            this.db.Users.Load();
-            this.dataGridViewUsers.DataSource = db.Users.Local.ToBindingList();
+            _db = new Models.BlogContext();
 
+            // Метод Load расширения используется для всех пользователей из БД в DbContext БД.
+            _db.Users.Load();
+            dataGridViewUsers.DataSource = _db.Users.Local.ToBindingList();
         }
-        //Метод он OnClosing вызывается при закрытии формы 
+
+        // OnClosing - при закрытии формы.
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
-            this.db?.Dispose();
-            this.db = null;
+            _db?.Dispose();
+            _db = null;
         }
 
-        private void dataGridViewUsers_SelectionChanged(object sender, EventArgs e)
+        private void DataGridViewUsers_SelectionChanged(object sender, EventArgs e)
         {
-            if (this.db != null)
+            if (_db != null)
             {
-                var user = (User)this.dataGridViewUsers.CurrentRow.DataBoundItem;
+                var currentRow = dataGridViewUsers.CurrentRow;
+
+                if (currentRow == null)
+                    return;
+
+                var user = (User)dataGridViewUsers.CurrentRow.DataBoundItem;
+
                 if (user != null)
                 {
-                    this.db.Entry(user).Collection(e => e.Posts).Load();
-                    this.dataGridViewPosts.DataSource = user.Posts;
+                    _db.Entry(user).Collection(e => e.Posts).Load();
+                    dataGridViewPosts.DataSource = user.Posts;
                 }
             }
         }
 
-        private void buttonSave_Click(object sender, EventArgs e)
+        private void ButtonSave_Click(object sender, EventArgs e)
         {
-            this.db!.SaveChanges();
-            this.dataGridViewPosts.Refresh();
-            this.dataGridViewUsers.Refresh();
+            // Этот код вызывает метод SaveChanges(),
+            // который сохраняет все изменения в БД
+            _db!.SaveChanges();
+
+
+            dataGridViewUsers.Refresh();
+            dataGridViewPosts.Refresh();
         }
     }
 }
-

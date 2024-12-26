@@ -50,7 +50,7 @@
             dataGridViewUsers.Name = "dataGridViewUsers";
             dataGridViewUsers.Size = new Size(393, 360);
             dataGridViewUsers.TabIndex = 0;
-            dataGridViewUsers.SelectionChanged += dataGridViewUsers_SelectionChanged;
+            dataGridViewUsers.SelectionChanged += DataGridViewUsers_SelectionChanged;
             // 
             // panelTop
             // 
@@ -73,7 +73,7 @@
             buttonSave.TabIndex = 2;
             buttonSave.Text = "Save";
             buttonSave.UseVisualStyleBackColor = true;
-            buttonSave.Click += buttonSave_Click;
+            buttonSave.Click += ButtonSave_Click;
             // 
             // panelLeft
             // 
